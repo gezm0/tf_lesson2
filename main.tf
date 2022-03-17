@@ -30,8 +30,9 @@ data "aws_ami" "amazon_linux" {
 resource "aws_instance" "my_webserver" {
     ami = data.aws_ami.amazon_linux.id
     instance_type = "t2.micro"
-    vpc_security_group_ids = [aws_security_group.my_webserver_sg.id]
+    vpc_security_group_ids = [ aws_security_group.my_webserver_sg.id ]
     user_data = file("user_data.sh")
+    depends_on = [ aws_db_instance.my_database ]
     tags = {
       "Name" = "WebServer homework lesson2"
     }
@@ -53,6 +54,44 @@ resource "aws_security_group" "my_webserver_sg" {
             protocol = "tcp"
     }
   }
+ 
+    egress {
+        from_port = 0
+        to_port = 0
+        cidr_blocks = [ "0.0.0.0/0" ]
+        protocol = "-1"
+        }
+}
+
+resource "aws_db_instance" "my_database" {
+    allocated_storage    = 20
+    engine               = "postgres"
+    engine_version       = "14.2"
+    instance_class       = "db.t3.micro"
+    db_name              = "db_test"
+    username             = var.db_user
+    password             = var.db_password
+    vpc_security_group_ids = [ aws_security_group.my_db_sg.id ]
+    publicly_accessible  = false
+    skip_final_snapshot  = true
+    tags = {
+        "Name" = "Database homework lesson2"
+        }
+}
+
+resource "aws_security_group" "my_db_sg" {
+    name = "Database homework lesson2 Security Group"
+    description = "Database homework lesson2 Security Group"
+    tags = {
+        "Name" = "Database homework lesson2 Security Group"
+    }
+
+    ingress {
+        from_port = "5432"
+        to_port = "5432"
+        cidr_blocks = [ "0.0.0.0/0" ]
+        protocol = "tcp"
+    }
  
     egress {
         from_port = 0
