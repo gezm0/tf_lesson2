@@ -1,7 +1,7 @@
 terraform {
     required_providers {
         aws = {
-            source = "hashicorp/aws"
+            source  = "hashicorp/aws"
             version = "~> 4.5"
         }
     }
@@ -12,7 +12,7 @@ provider "aws" {
     region = "eu-west-2"
     default_tags {
         tags = {
-            "Owner" = "sergei_eremin@epam.com"
+            "Owner"   = "sergei_eremin@epam.com"
             "Project" = "TF Lesson2"
         }
     }
@@ -21,19 +21,19 @@ provider "aws" {
 data "aws_ami" "amazon_linux" {
     most_recent = true
     filter {
-        name = "name"
+        name   = "name"
         values = [ "amzn2-ami-kernel-5.10-hvm-*-x86_64-gp2" ]
     }
     owners = [ "amazon" ]
 }
 
 resource "aws_instance" "my_webserver" {
-    ami = data.aws_ami.amazon_linux.id
-    instance_type = "t2.micro"
+    ami                    = data.aws_ami.amazon_linux.id
+    instance_type          = "t2.micro"
     vpc_security_group_ids = [ aws_security_group.my_webserver_sg.id ]
-    availability_zone = var.availability_zone
-    user_data = file("user_data.sh")
-    depends_on = [ aws_db_instance.my_database ]
+    availability_zone      = var.availability_zone
+    user_data              = file("user_data.sh")
+    depends_on             = [ aws_db_instance.my_database ]
     tags = {
       "Name" = "WebServer homework lesson2"
     }
@@ -43,7 +43,7 @@ resource "aws_instance" "my_webserver" {
 }
 
 resource "aws_security_group" "my_webserver_sg" {
-    name = "WebServer homework lesson2 Security Group"
+    name        = "WebServer homework lesson2 Security Group"
     description = "WebServer homework lesson2 Security Group"
     tags = {
         "Name" = "WebServer homework lesson2 Security Group"
@@ -52,32 +52,33 @@ resource "aws_security_group" "my_webserver_sg" {
     dynamic "ingress" {
         for_each = [ "22", "80" ]
         content {
-            from_port = ingress.value
-            to_port = ingress.value
+            from_port   = ingress.value
+            to_port     = ingress.value
             cidr_blocks = [ "0.0.0.0/0" ]
-            protocol = "tcp"
+            protocol    = "tcp"
     }
   }
  
     egress {
-        from_port = 0
-        to_port = 0
+        from_port   = 0
+        to_port     = 0
         cidr_blocks = [ "0.0.0.0/0" ]
-        protocol = "-1"
+        protocol    = "-1"
         }
 }
 
 resource "aws_db_instance" "my_database" {
-    allocated_storage    = 20
-    engine               = "postgres"
-    engine_version       = "14.2"
-    instance_class       = "db.t3.micro"
-    db_name              = "db_test"
-    username             = var.db_user
-    password             = var.db_password
+    allocated_storage      = 20
+    engine                 = "postgres"
+    engine_version         = "14.2"
+    instance_class         = "db.t3.micro"
+    db_name                = "db_test"
+    username               = var.db_user
+    password               = var.db_password
     vpc_security_group_ids = [ aws_security_group.my_db_sg.id ]
-    publicly_accessible  = false
-    skip_final_snapshot  = true
+    availability_zone      = var.availability_zone
+    publicly_accessible    = false
+    skip_final_snapshot    = true
     tags = {
         "Name" = "Database homework lesson2"
         }
@@ -91,16 +92,16 @@ resource "aws_security_group" "my_db_sg" {
     }
 
     ingress {
-        from_port = "5432"
-        to_port = "5432"
+        from_port   = "5432"
+        to_port     = "5432"
         cidr_blocks = [ "0.0.0.0/0" ]
-        protocol = "tcp"
+        protocol    = "tcp"
     }
  
     egress {
-        from_port = 0
-        to_port = 0
+        from_port   = 0
+        to_port     = 0
         cidr_blocks = [ "0.0.0.0/0" ]
-        protocol = "-1"
+        protocol    = "-1"
         }
 }

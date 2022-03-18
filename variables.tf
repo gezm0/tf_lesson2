@@ -11,6 +11,6 @@ variable "db_password" {
 }
 
 variable "availability_zone" {
-    type = string
-    default = "eu-west-2a"
+    type        = string
+    default     = "eu-west-2a"
 }
