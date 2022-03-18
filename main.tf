@@ -43,10 +43,10 @@ resource "aws_instance" "my_webserver" {
 }
 
 resource "aws_security_group" "my_webserver_sg" {
-    name        = "WebServer homework lesson2 Security Group"
+    name        = "WebServer homework lesson2 SG"
     description = "WebServer homework lesson2 Security Group"
     tags = {
-        "Name" = "WebServer homework lesson2 Security Group"
+        "Name" = "WebServer homework lesson2 SG"
     }
 
     dynamic "ingress" {
@@ -85,10 +85,10 @@ resource "aws_db_instance" "my_database" {
 }
 
 resource "aws_security_group" "my_db_sg" {
-    name = "Database homework lesson2 Security Group"
+    name = "Database homework lesson2 SG"
     description = "Database homework lesson2 Security Group"
     tags = {
-        "Name" = "Database homework lesson2 Security Group"
+        "Name" = "Database homework lesson2 SG"
     }
 
     ingress {
