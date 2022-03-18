@@ -9,3 +9,8 @@ variable "db_password" {
     type        = string
     sensitive   = true
 }
+
+variable "availability_zone" {
+    type = string
+    default = "eu-west-2a"
+}

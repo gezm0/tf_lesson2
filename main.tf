@@ -31,10 +31,14 @@ resource "aws_instance" "my_webserver" {
     ami = data.aws_ami.amazon_linux.id
     instance_type = "t2.micro"
     vpc_security_group_ids = [ aws_security_group.my_webserver_sg.id ]
+    availability_zone = var.availability_zone
     user_data = file("user_data.sh")
     depends_on = [ aws_db_instance.my_database ]
     tags = {
       "Name" = "WebServer homework lesson2"
+    }
+    lifecycle {
+        ignore_changes = [ ami ]
     }
 }
 
